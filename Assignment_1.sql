@@ -131,7 +131,7 @@ To calculate the fourth column, add the expressions you used for the first and t
 ------------------------------------------------------------------------*/
 
 SELECT 
-    100              AS price,
-    0.07             AS tax_rate,
-    100 * 0.07       AS tax_amount,
-    100 + 0.07 * 100 AS total;
+    100,
+    0.07,
+    100 * 0.07,
+    100 + 0.07 * 100;
