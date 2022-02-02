@@ -1,5 +1,3 @@
-/*Olga Osinskaya*/
-
 
 /*------------------------------------1-----------------------------------
 Write a SELECT statement that returns one column from the Customers table
