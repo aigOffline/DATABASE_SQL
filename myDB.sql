@@ -2,8 +2,8 @@
 * This script creates the database named my_shop 
 *********************************************************/
 
-DROP DATABASE IF EXISTS T-shirt_online_shop;
-CREATE DATABASE T-shirt_online_shop;
+DROP DATABASE IF EXISTS flora_online_shop;
+CREATE DATABASE flora_online_shop;
 USE my_drum_shop;
 
 /* create the tables for the database */
@@ -15,8 +15,6 @@ CREATE TABLE categories (
 CREATE TABLE products (
   product_id         INT            PRIMARY KEY   AUTO_INCREMENT,
   category_id        INT            NOT NULL,
-  product_size      VARCHAR(255)   NOT NULL,
-  product_brand       VARCHAR(255)   NOT NULL,
   description        TEXT           NOT NULL,
   list_price         DECIMAL(10,2)  NOT NULL,
   discount_percent   DECIMAL(10,2)  NOT NULL      DEFAULT 0.00,
@@ -95,11 +93,11 @@ CREATE TABLE administrators (
 
 /* Insert data into the tables */
 INSERT INTO categories (category_id, category_name) VALUES
-(1, 'Guitars'),
-(2, 'Basses'),
-(3, 'Drums'), 
-(4, 'Keyboards'),
-(5, 'Accessories');
+(1, 'Daisy'),
+(2, 'Carnation'),
+(3, 'Orchid'), 
+(4, 'Tulip'),
+(5, 'Peony');
 
 INSERT INTO products (product_id, category_id, product_code, product_name, description, list_price, discount_percent, date_added) VALUES
 (1, 1, 'strat', 'Fender Stratocaster', 'The Fender Stratocaster is the electric guitar design that changed the world. New features include a tinted neck, parchment pickguard and control knobs, and a ''70s-style logo. Includes select alder body, 21-fret maple neck with your choice of a rosewood or maple fretboard, 3 single-coil pickups, vintage-style tremolo, and die-cast tuning keys. This guitar features a thicker bridge block for increased sustain and a more stable point of contact with the strings. At this low price, why play anything but the real thing?\r\n\r\nFeatures:\r\n\r\n* New features:\r\n* Thicker bridge block\r\n* 3-ply parchment pick guard\r\n* Tinted neck', '699.00', '30.00', '2014-10-30 09:32:40'),
