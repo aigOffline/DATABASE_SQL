@@ -2,8 +2,8 @@
 * This script creates the database named my_shop 
 *********************************************************/
 
-DROP DATABASE IF EXISTS my_shop;
-CREATE DATABASE my_shop;
+DROP DATABASE IF EXISTS T-shirt_online_shop;
+CREATE DATABASE T-shirt_online_shop;
 USE my_drum_shop;
 
 /* create the tables for the database */
@@ -16,7 +16,6 @@ CREATE TABLE products (
   product_id         INT            PRIMARY KEY   AUTO_INCREMENT,
   category_id        INT            NOT NULL,
   product_size      VARCHAR(255)   NOT NULL,
-  product_code       VARCHAR(10)    NOT NULL      UNIQUE,
   product_brand       VARCHAR(255)   NOT NULL,
   description        TEXT           NOT NULL,
   list_price         DECIMAL(10,2)  NOT NULL,
