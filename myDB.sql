@@ -563,12 +563,12 @@ USE my_drum_shop;
 
 /* create the tables for the database */
 CREATE TABLE categories (
-  category_id        INT            PRIMARY KEY   AUTO_INCREMENT,
+  id        INT            PRIMARY KEY   AUTO_INCREMENT,
   category_name      VARCHAR(255)   NOT NULL      UNIQUE
 );
 
 CREATE TABLE products (
-  product_id         INT            PRIMARY KEY   AUTO_INCREMENT,
+   id         INT            PRIMARY KEY   AUTO_INCREMENT,
   category_id        INT            NOT NULL,
   description        TEXT           NOT NULL,
   list_price         DECIMAL(10,2)  NOT NULL,
@@ -579,20 +579,20 @@ CREATE TABLE products (
     REFERENCES categories (category_id)
 );
 
-CREATE TABLE customers (
-  customer_id           INT            PRIMARY KEY   AUTO_INCREMENT,
+CREATE TABLE person (
+  id           INT            PRIMARY KEY   AUTO_INCREMENT,
   email_address         VARCHAR(255)   NOT NULL     
   password              VARCHAR(60)    NOT NULL,
   first_name            VARCHAR(60)    NOT NULL,
   last_name             VARCHAR(60)    NOT NULL,
+    middle_name    VARCHAR(60)    NOT NULL,
   birthdate		DATETIME		     DEFAULT NULL,
-  shipping_address_id   INT                          DEFAULT NULL,
-  billing_address_id    INT                          DEFAULT NULL
+
+  address_id    INT                          DEFAULT NULL
 );
 
 CREATE TABLE addresses (
-  address_id         INT            PRIMARY KEY   AUTO_INCREMENT,
-  customer_id        INT            NOT NULL,
+  id         INT            PRIMARY KEY   AUTO_INCREMENT,
   line1              VARCHAR(60)    NOT NULL,
   line2              VARCHAR(60)                  DEFAULT NULL,
   city               VARCHAR(40)    NOT NULL,
@@ -600,15 +600,12 @@ CREATE TABLE addresses (
   country	     VARCHAR(40)		  DEFAULT 'USA',
   zip_code           VARCHAR(10)    NOT NULL,
   phone              VARCHAR(12)    NOT NULL,
-  disabled           TINYINT(1)     NOT NULL      DEFAULT 0,
-  CONSTRAINT addresses_fk_customers
-    FOREIGN KEY (customer_id)
-    REFERENCES customers (customer_id)
+
 );
 
 CREATE TABLE orders (
-  order_id           INT            PRIMARY KEY  AUTO_INCREMENT,
-  customer_id        INT            NOT NULL,
+  id           INT            PRIMARY KEY  AUTO_INCREMENT,
+  user_id        INT            NOT NULL,
   order_date         DATETIME       NOT NULL,
   ship_amount        DECIMAL(10,2)  NOT NULL,
   tax_amount         DECIMAL(10,2)  NOT NULL,
@@ -618,13 +615,13 @@ CREATE TABLE orders (
   card_number        CHAR(16)       NOT NULL,
   card_expires       CHAR(7)        NOT NULL,
   billing_address_id  INT           NOT NULL,
-  CONSTRAINT orders_fk_customers
-    FOREIGN KEY (customer_id)
-    REFERENCES customers (customer_id)
+  CONSTRAINT orders_fk_users
+    FOREIGN KEY (users_id)
+    REFERENCES users (users_id)
 );
 
 CREATE TABLE order_items (
-  item_id            INT            PRIMARY KEY  AUTO_INCREMENT,
+  id            INT            PRIMARY KEY  AUTO_INCREMENT,
   order_id           INT            NOT NULL,
   product_id         INT            NOT NULL,
   item_price         DECIMAL(10,2)  NOT NULL,
@@ -638,12 +635,23 @@ CREATE TABLE order_items (
     REFERENCES products (product_id)
 );
 
-CREATE TABLE administrators (
-  admin_id           INT            PRIMARY KEY   AUTO_INCREMENT,
-  email_address      VARCHAR(255)   NOT NULL,
+CREATE TABLE  users (
+  id           INT            PRIMARY KEY   AUTO_INCREMENT,
+  email      VARCHAR(255)   NOT NULL,
   password           VARCHAR(255)   NOT NULL,
-  first_name         VARCHAR(255)   NOT NULL,
-  last_name          VARCHAR(255)   NOT NULL
+  person_id         INT   NOT NULL,
+  role_id          INT   NOT NULL,
+    CONSTRAINT items_fk_person
+    FOREIGN KEY (person_id)
+    REFERENCES person (id),
+    CONSTRAINT items_fk_role
+    FOREIGN KEY (role_id)
+    REFERENCES role (id)
+);
+
+CREATE TABLE  role (
+  id           INT       PRIMARY KEY   AUTO_INCREMENT,
+  name      VARCHAR(255)   NOT NULL
 );
 
 /* Insert data into the tables */
