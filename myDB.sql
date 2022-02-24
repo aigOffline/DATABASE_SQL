@@ -1,5 +1,5 @@
 /********************************************************
-* This script creates the database 
+* This script creates the database named my_shop 
 *********************************************************/
 --
 -- PostgreSQL database dump
