@@ -105,6 +105,7 @@ INSERT INTO categories (category_id, category_name) VALUES
 (4, 'GetWell'),
 (5, 'Sympathy');
 
+-- Insert data into the tables
 
 INSERT INTO products (id, category_id, description, price, discount, date_created) 
 VALUES
