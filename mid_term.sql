@@ -1,219 +1,137 @@
-/*Olga Osinskaya*/
+DROP DATABASE IF EXISTS flora_online_shop;
+CREATE DATABASE flora_online_shop;
+USE my_drum_shop;
 
-/*------------------------------------1-----------------------------------
-Find all Motorcycles that do not have the scale numbers 1:18.
-Include Bike name, scale, and description into the result.
-Name the columns as in the screenshot below.
-Sort ascending by Scale and then Bike Name. Query returns 11 rows. Hint:
-all information is in the the table products. No join is required
-------------------------------------------------------------------------*/
-SELECT 
-    productName AS 'Bike Name',
-    productScale AS 'Scale',
-    productDescription AS 'Description'
-FROM
-    products
-WHERE
-    productScale != '1:18'
-        AND productLine = 'Motorcycles'
-ORDER BY productScale , productName ASC;
+/* create the tables for the database */
+CREATE TABLE categories (
+  id        BIGSERIAL           PRIMARY KEY ,
+  category_name      VARCHAR(255)   NOT NULL      UNIQUE
+);
 
-/*------------------------------------2-----------------------------------
-Find 
--first name, 
--last name and 
--e-mails of all sales representatives (as a job title)
-responsible for territories “Japan”, ”EMEA”, and “APAC”.
-Include country, city and territory into the resulting table. 
-Sort by territory in ascending, then by country in descending, 
-then by city in ascending order, then by last name ascending, and 
-then by first name ascending. Returns 11 rows. See screenshot below. 
-Hint: you will need to join two tables
-------------------------------------------------------------------------*/
-SELECT 
-    e.firstName,
-    e.lastName,
-    e.email,
-    o.country,
-    o.city,
-    o.territory
-FROM
-    employees as e
-        INNER JOIN
-    offices as o ON e.officeCode = o.officeCode
-WHERE
-    o.territory IN ('Japan' , 'EMEA', 'APAC')
-ORDER BY o.territory ASC , o.country DESC , o.city ASC , e.lastName ASC , e.firstName ASC;
-/*------------------------------------3-----------------------------------
-Find US and German customers who have not placed any orders. Retrieve
-customer number and customer name. Sort by customer name. Returns 11 rows.
-Hint: use an outer join. 
-------------------------------------------------------------------------*/
+CREATE TABLE products (
+   id        BIGSERIAL           PRIMARY KEY ,
+  category_id        INT            NOT NULL,
+  description        TEXT           NOT NULL,
+  list_price         DECIMAL(10,2)  NOT NULL,
+  discount_percent   DECIMAL(10,2)  NOT NULL      DEFAULT 0.00,
+  date_added         DATETIME                     DEFAULT NULL,
+  CONSTRAINT products_fk_categories
+    FOREIGN KEY (category_id)
+    REFERENCES categories (category_id)
+);
 
-SELECT DISTINCT
-    c.customerName, c.customerNumber
-FROM
-    customers AS c
-        LEFT OUTER JOIN
-    orders AS o ON c.customerNumber = o.customerNumber
-WHERE
-    c.country IN ('Germany' , 'USA')
-        AND c.customerNumber NOT IN (SELECT 
-            customerNumber
-        FROM
-            orders)
-ORDER BY c.customerName;
+CREATE TABLE person (
+  id        BIGSERIAL           PRIMARY KEY ,
+  email_address         VARCHAR(255)   NOT NULL     
+  password              VARCHAR(60)    NOT NULL,
+  first_name            VARCHAR(60)    NOT NULL,
+  last_name             VARCHAR(60)    NOT NULL,
+  middle_name           VARCHAR(60)    NOT NULL,
+  birthdate		        DATE		  DEFAULT NULL,
 
-/*------------------------------------4-----------------------------------
-Find 
--customer names and 
--order details of all the non-US and non-Australia
-customers whose order status is not ‘shipped’ and not ‘resolved’. 
-Include the following columns: customerName, country, status, productName, 
-and quantityOrdered. 
-Sort by country then productName. Returns 104 rows.  
-See screenshot below. Hint: you will need to join 4 tables. 
+  address_id    INT                          DEFAULT NULL
+);
 
-------------------------------------------------------------------------*/
-SELECT 
-    c.customerName,
-    c.country,
-    o.status,
-    p.productName,
-    od.quantityOrdered
-FROM
-    customers AS c
-        INNER JOIN
-    orders o ON c.customerNumber = o.customerNumber
-        INNER JOIN
-    orderdetails od ON o.orderNumber = od.orderNumber
-        INNER JOIN
-    products p ON p.productCode = od.productCode
-WHERE
-    c.country NOT IN ('USA' , 'Australia')
-        AND o.status NOT IN ('Shipped' , 'Resolved')
-ORDER BY c.country , p.productName;
+CREATE TABLE addresses (
+  id                BIGSERIAL       PRIMARY KEY ,
+  line1              VARCHAR(60)    NOT NULL,
+  line2              VARCHAR(60)                  DEFAULT NULL,
+  city               VARCHAR(40)    NOT NULL,
+  state              VARCHAR(2)     NOT NULL,
+  country	     VARCHAR(40)		  DEFAULT 'USA',
+  zip_code           VARCHAR(10)    NOT NULL,
+  phone              VARCHAR(12)    NOT NULL,
 
-/*------------------------------------5-----------------------------------
-Find out how many orders were made by customers with names starting from
-letters ‘A’, ‘D’, ‘E’ or ‘L’. Retrieve only those who made at least 4 orders. 
-The resulting table should have 2 columns: customerName and orderCount 
-(number of orders made). 
-Sort descending by orderCount. 
-There must be 9 rows in the result. See screenshot below. 
-Hint: You will need to use GROUP BY and HAVING
-------------------------------------------------------------------------*/
-SELECT 
-    c.customerName, COUNT(o.orderNumber) AS orderCount
-FROM
-    customers AS c
-        INNER JOIN
-    orders AS o ON c.customerNumber = o.customerNumber
-WHERE
-    customerName REGEXP '^[A,D,E,L]'
-GROUP BY c.customerName
-HAVING orderCount >= 4
-order by orderCount desc; 
+);
 
-/*------------------------------------6-----------------------------------
-Find out the total value customers in the USA ordered from the productLine
-‘Classic Cars’. The total value is the sum quantityOrdered * priceEach. 
-Order by total value descending. There must be 33 rows in the result. 
-See screenshot below. Hint: use HAVING and WHERE, and join 4 tables
-------------------------------------------------------------------------*/
-SELECT 
-    c.customerName,
-    c.country,
-    ROUND(SUM(od.quantityOrdered * priceEach), 2) as Total_Value
-FROM
-    customers AS c
-        INNER JOIN
-    orders o ON c.customerNumber = o.customerNumber
-        INNER JOIN
-    orderdetails od ON od.orderNumber = o.orderNumber
-        INNER JOIN
-    products p ON od.productCode = p.productCode
-WHERE
-    c.country = 'USA'
-        AND p.productLine = 'Classic Cars'
-        group by c.customerName
-        order by Total_Value desc;
+CREATE TABLE orders (
+  id            BIGSERIAL           PRIMARY KEY ,
+  user_id        INT            NOT NULL,
+  order_date         DATETIME       NOT NULL,
+  ship_amount        DECIMAL(10,2)  NOT NULL,
+  tax_amount         DECIMAL(10,2)  NOT NULL,
+  ship_date          DATE                    DEFAULT NULL,
+  ship_address_id    INT            NOT NULL,
+  card_type          VARCHAR(50)    NOT NULL,
+  card_number        CHAR(16)       NOT NULL,
+  card_expires       CHAR(7)        NOT NULL,
+  billing_address_id  INT           NOT NULL,
+  CONSTRAINT orders_fk_users
+    FOREIGN KEY (users_id)
+    REFERENCES users (users_id)
+);
+
+CREATE TABLE order_items (
+  id            INT            PRIMARY KEY  AUTO_INCREMENT,
+  order_id           INT            NOT NULL,
+  product_id         INT            NOT NULL,
+  item_price         DECIMAL(10,2)  NOT NULL,
+  discount_amount    DECIMAL(10,2)  NOT NULL,
+  quantity           INT            NOT NULL,
+  CONSTRAINT items_fk_orders
+    FOREIGN KEY (order_id)
+    REFERENCES orders (order_id), 
+  CONSTRAINT items_fk_products
+    FOREIGN KEY (product_id)
+    REFERENCES products (product_id)
+);
+
+CREATE TABLE  users (
+  id         BIGSERIAL           PRIMARY KEY ,
+  email      VARCHAR(255)         NOT NULL,
+  password   VARCHAR(255)         NOT NULL,
+  person_id         INT           NOT NULL,
+  role_id          INT            NOT NULL,
+    CONSTRAINT items_fk_person
+    FOREIGN KEY (person_id)
+    REFERENCES person (id),
+    CONSTRAINT items_fk_role
+    FOREIGN KEY (role_id)
+    REFERENCES role (id)
+);
+
+CREATE TABLE  role (
+  id        BIGSERIAL      PRIMARY KEY ,
+  name      VARCHAR(255)   NOT NULL
+);
 
 
-/*------------------------------------7-----------------------------------
-For the two productLines 
-i. ‘Classic Cars’ 
-ii. ‘Vintage Cars’ 
-find the COUNT(*) and the sum of 
-the quantityOrdered * priceEach AS sumTotalPrice for
-i. status = ‘Cancelled’ 
-ii. status = ‘Disputed’ 
-Order by sumTotalPrice descending. See the screenshot below. 
-Hint: you will need to use UNION to combine the results from status = ‘Cancelled’ 
-with the results from status = ‘Disputed’
-------------------------------------------------------------------------*/
+/* Insert data into the tables */
 
-SELECT 
-    p.productLine,
-    o.status,
-    COUNT(*),
-    ROUND(SUM(od.quantityOrdered * od.priceEach),
-            2) AS sumTotalPrice
-FROM
-    products p
-        INNER JOIN
-    orderdetails od ON p.productCode = od.productCode
-        INNER JOIN
-    orders o ON o.orderNumber = od.orderNumber
-WHERE
-    p.productLine IN ('Classic Cars' , 'Vintage Cars')
-        AND o.status = 'Disputed'
-GROUP BY p.productLine 
-UNION SELECT 
-    p.productLine,
-    o.status,
-    COUNT(*),
-    ROUND(SUM(od.quantityOrdered * od.priceEach),
-            2) AS sumTotalPrice
-FROM
-    products p
-        INNER JOIN
-    orderdetails od ON p.productCode = od.productCode
-        INNER JOIN
-    orders o ON o.orderNumber = od.orderNumber
-WHERE
-    p.productLine IN ('Classic Cars' , 'Vintage Cars')
-        AND o.status = 'Cancelled'
-GROUP BY p.productLine
-ORDER BY sumTotalPrice DESC;
+INSERT INTO categories (category_id, category_name) VALUES
+(1, 'Anniversary'),
+(2, 'Birthday'),
+(3, 'NewBaby'), 
+(4, 'GetWell'),
+(5, 'Sympathy');
 
 
-/*------------------------------------8-----------------------------------
-Find all employees who work in ‘Paris’ office.
-i. Write correlated subquery to get the results (10 points)
-ii. Write the same query using JOIN (3 points) 
-Return columns in the screenshot below. Hint: Returns 5 rows. 
-------------------------------------------------------------------------*/
-SELECT 
-    CONCAT(firstName, ' ', lastName) AS full_name
-FROM
-    employees e
-WHERE
-    officeCode IN (SELECT 
-            officeCode
-        FROM
-            offices
-        WHERE
-            city = 'Paris'); 
-            
-SELECT 
-    CONCAT(e.firstName, ' ', e.lastName) AS full_name
-FROM
-    employees e
-        INNER JOIN
-    offices o ON e.officeCode = o.officeCode
-WHERE
-    o.city = 'Paris'    
-            
+INSERT INTO products (id, category_id, description, price, discount, date_created) 
+VALUES
+(1, 1, 'BEAUTIFUL SPIRIT BASKET
+Let them know how much you care with a gorgeous bouquet that features carnations, stock, roses, lilies and Fuji mums.
+ Each bloom is a thoughtful reminder of your support and love, while sitting in a beautifully crafted basket.
+Please Note: The bouquet pictured reflects our original design for this product. While we always try to follow the color palette,
+ we may replace stems to deliver the freshest bouquet possible, and we may sometimes need to use a different container.
+','75.00', '5.00', '2021-10-30');
+INSERT INTO products (id, category_id, description, price, discount, date_created) 
+VALUES
+(2, 3, 'LIGHT OF MY LIFE BOUQUET
+The Light of My Life Bouquet blossoms with brilliant color and a sweet 
+ sophistication to create the perfect impression! Pink Lilies make the 
+ eyes dance across the unique design of this flower bouquet, surrounded 
+ by the blushing colors of orange roses, lavender cushion poms, 
+ hot pink carnations, and lush greens.
+','90.00', '3.00', '2022-01-30');
+INSERT INTO products (id, category_id, description, price, discount, date_created) 
+VALUES
+(3, 2, 'The Birthday Brights Bouquet is a true celebration of color and 
+ life to surprise and delight your special recipient on their big day!
+ Hot pink gerbera daisies and orange roses take center stage surrounded
+ by purple statice, yellow cushion poms, green button poms, and lush greens
+ to create party perfect birthday display. Presented in a modern rectangular 
+ ceramic vase with colorful striping at the bottom, "Happy Birthday" lettering 
+ at the top, and a bright pink bow at the center.
+','65.50', '0.00', '2022-02-10');
 
 
