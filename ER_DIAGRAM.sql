@@ -1,6 +1,6 @@
 DROP DATABASE IF EXISTS flora_online_shop;
 CREATE DATABASE flora_online_shop;
-USE my_drum_shop;
+\c flora_online_shop;
 
 /* create the tables for the database */
 CREATE TABLE categories (
@@ -12,9 +12,9 @@ CREATE TABLE products (
    id        BIGSERIAL           PRIMARY KEY ,
   category_id        INT            NOT NULL,
   description        TEXT           NOT NULL,
-  list_price         DECIMAL(10,2)  NOT NULL,
+  price              DECIMAL(10,2)  NOT NULL,
   discount_percent   DECIMAL(10,2)  NOT NULL      DEFAULT 0.00,
-  date_added         DATETIME                     DEFAULT NULL,
+  date_created       DATETIME                     DEFAULT NULL,
   CONSTRAINT products_fk_categories
     FOREIGN KEY (category_id)
     REFERENCES categories (category_id)
