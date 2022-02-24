@@ -115,6 +115,7 @@ Let them know how much you care with a gorgeous bouquet that features carnations
 Please Note: The bouquet pictured reflects our original design for this product. While we always try to follow the color palette,
  we may replace stems to deliver the freshest bouquet possible, and we may sometimes need to use a different container.
 ','75.00', '5.00', '2021-10-30');
+
 INSERT INTO products (id, category_id, description, price, discount, date_created) 
 VALUES
 (2, 3, 'LIGHT OF MY LIFE BOUQUET
@@ -135,4 +136,60 @@ VALUES
  at the top, and a bright pink bow at the center.
 ','65.50', '0.00', '2022-02-10');
 
+
+INSERT INTO person (id, first_name, last_name, middle_name, birth_date, address_id) VALUES
+(1, 'Allan', 'Sherwood', 'Smith', '10-21-1967', 2),
+(2, 'Barry', 'Zimmer', 'Adam', '09-14-1995', 3 ),
+(3,  'Christine', 'Brown', 'Miller','11-11-2001', 4),
+(4,  'David', 'Goldstein','Glitter', '01-11-1991', 5),
+(5,  'Erin', 'Valentino', '','02-22-1951', 6),
+(6,  'Frank Lee', 'Wilson', '','04-03-1991', 7),
+(7,  'Gary', 'Hernandez', 'Migan','05-14-1951', 8),
+(8,  'Heather', 'Esway','', '10-14-1971', 9);
+
+
+INSERT INTO addresses (id, line1, line2, city, state, zip_code, country, phone) VALUES
+(1, '100 East Ridgewood Ave.', '', 'Paramus', 'NJ', '07652', 'USA', 201-653-4472'),
+(2, '21 Rosewood Rd.', '', 'Woodcliff Lake', 'NJ', '07677', 'USA', 201-653-4472'),
+(3, '16285 Wendell St.', '', 'Omaha', 'NE', '68135','USA', '402-896-2576'),
+(4, '19270 NW Cornell Rd.', '', 'Beaverton', 'OR', '97006', 'USA', '503-654-1291'),
+(5, '186 Vermont St.', 'Apt. 2', 'San Francisco', 'CA', '94110', 'USA', '415-292-6651'),
+(6, '1374 46th Ave.', '', 'San Francisco', 'CA', '94129', 'USA', 415-292-6651'),
+(7, '6982 Palm Ave.', '', 'Fresno', 'CA', '93711', 'USA', '559-431-2398'),
+(8, '23 Mountain View St.', '', 'Denver', 'CO', '80208', 'USA','303-912-3852'),
+(9, '7361 N. 41st St.', 'Apt. B', 'New York', 'NY', '10012', 'USA', 212-335-2093'),
+(10, '3829 Broadway Ave.', 'Suite 2', 'New York', 'NY', '10012', 'USA', 212-239-1208'),
+(11, '2381 Buena Vista St.', '', 'Los Angeles', 'CA', '90023', 'USA', 213-772-5033'),
+(12, '291 W. Hollywood Blvd.', '', 'Los Angeles', 'CA', '90024', 'USA', 213-391-2938');
+
+
+ INSERT INTO orders (order_id, customer_id, order_date, ship_amount, tax_amount, ship_date, ship_address_id, card_type, card_number, card_expires, billing_address_id) VALUES
+(1, 1, '2018-03-28 09:40:28', '5.00', '32.32', '2018-03-30', 1, 'Visa', '4111111111111111', '04/2020', 2),
+(2, 2, '2018-03-28 11:23:20', '5.00', '0.00', '2018-03-29', 3, 'Visa', '4012888888881881', '08/2019', 3),
+(3, 1, '2018-03-29 09:44:58', '10.00', '89.92', '2018-03-31', 1, 'Visa', '4111111111111111', '04/2017', 2),
+(4, 3, '2018-03-30 15:22:31', '5.00', '0.00', '2018-04-03', 4, 'American Express', '378282246310005', '04/2016', 4),
+(5, 4, '2018-03-31 05:43:11', '5.00', '0.00', '2018-04-02', 5, 'Visa', '4111111111111111', '04/2019', 6),
+(6, 5, '2018-03-31 18:37:22', '5.00', '0.00', NULL, 7, 'Discover', '6011111111111117', '04/2019', 7),
+(7, 6, '2018-04-01 23:11:12', '15.00', '0.00', '2018-04-03', 8, 'MasterCard', '5555555555554444', '04/2019', 8),
+(8, 7, '2018-04-02 11:26:38', '5.00', '0.00', NULL, 9, 'Visa', '4012888888881881', '04/2019', 10),
+(9, 4, '2018-04-03 12:22:31', '5.00', '0.00', NULL, 5, 'Visa', '4111111111111111', '04/2019', 6);
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+ 
+ INSERT INTO order_items (id, order_id, product_id, item_price, 
+						 discount_amount, quantity) VALUES
+(1, 1, 1, '32.00', '5.70', 1),
+(2, 2, 2, '12.99', '1.20', 1),
+(3, 3, 3, '25.00', '13.84', 1),
+(4, 4, 4, '65.00', '16.85', 1),
+(5, 5, 5, '80.00', '9.70', 2);
+
+ 
+ INSERT INTO users (id, email_address, password, role_id, person_id) VALUES
+(1, 'admin@myguitarshop.com', '6a718fbd768c2378b511f8249b54897f940e9022', 1, 1),
+(2, 'joel@murach.com', '971e95957d3b74d70d79c20c94e9cd91b85f7aae', 2, 2),
+(3, 'mike@murach.com', '3f2975c819cefc686282456aeae3a137bf896ee8',  2, 3); 
+ 
+ INSERT INTO  roles (id, role_name) VALUES
+(1, 'Admin'),
+(2, 'Customer');
 
