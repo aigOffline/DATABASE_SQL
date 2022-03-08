@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect } from "../../../../client/my-app/node_modules/@types/react";
 import { useParams } from "react-router-dom";
 import { RestaurantsContext } from "../context/RestaurantsContext";
 import RestaurantFinder from "../apis/RestaurantFinder";
@@ -29,7 +29,7 @@ const RestaurantDetailPage = () => {
   return (
     <div>
       {selectedRestaurant && (
-        <> 
+        <>
           <h1 className="text-center display-1">
             {selectedRestaurant.restaurant.name}
           </h1>
@@ -45,7 +45,6 @@ const RestaurantDetailPage = () => {
             <Reviews reviews={selectedRestaurant.reviews} />
           </div>
           <AddReview />
-          
         </>
       )}
     </div>
