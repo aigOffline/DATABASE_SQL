@@ -2,13 +2,24 @@
 const express = require("express");
 const cors = require("cors");
 const db = require("./db");
-
+const path = require("path");
 const morgan = require("morgan");
 
 const app = express();
 
+//process.env.PORT 
+//
+
 app.use(cors());
 app.use(express.json());
+//app.use(express.static(path.join('./client/build')))
+if(process.env.NODE_ENV === "production"){
+  app.use(express.static(path.join(__dirname,'client/build')))
+}
+console.log(__dirname);
+console.log(output, path.join(__dirname,'client/build'));
+
+
 
 // Get all Restaurants
 app.get("/api/v1/restaurants", async (req, res) => {

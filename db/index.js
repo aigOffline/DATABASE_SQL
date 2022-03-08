@@ -10,3 +10,6 @@ const pool = new Pool({
 module.exports = {
   query: (text, params) => pool.query(text, params),
 };
+const proConfig = {
+  connectionString: process.env.DATABASE_URL 
+}
