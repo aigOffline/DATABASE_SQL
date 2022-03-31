@@ -1,3 +1,2 @@
 # DATABASE_SQL
-#todo database
-mit
+https://ui-data-sql.herokuapp.com/
